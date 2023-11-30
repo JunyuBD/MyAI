@@ -20,7 +20,12 @@ def bot_callback():
             "challenge": request.json['challenge']
     })
 
+    message_id = request.json['event']['message']['message_id']
+
     print(data['event']['sender']['sender_id']['open_id'])
+    if data['event']['sender']['sender_id']['open_id'] != "ou_aaa0199b52b1044cd44c043245927932":
+        reply_to_user(message_id, "Sorry, the beta is unstable so it only allow certain users to test.")
+
     user_open_id = data['event']['sender']['sender_id']['open_id']
     default_respond = json.dumps({
         "success": "cool"
@@ -29,7 +34,7 @@ def bot_callback():
     if request.json['event']['message']['chat_type'] == 'group' and not bot_mentioned_in_group(request.json['event'], ASSISTANT_BOT_OPEN_ID):
         print('bot not mentioned in the group')
         return default_respond
-    message_id = request.json['event']['message']['message_id']
+
     if message_id in message_map:
         print("message already handled")
         return default_respond

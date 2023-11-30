@@ -70,9 +70,6 @@ class Assistant:
                 print("Action required")
                 run = self.execute_actions(run)
 
-
-
-
         return
 
     def execute_actions(self, run):
@@ -86,10 +83,10 @@ class Assistant:
             tool_call_id = each_tool.id
             function_name = each_tool.function.name
             function_arg = each_tool.function.arguments
-            print("Tool ID: " + tool_call_id)
-            print("Function to call: " + function_name)
-            print("Parameters to use: " + function_arg)
-            print("=============")
+            # print("Tool ID: " + tool_call_id)
+            # print("Function to call: " + function_name)
+            # print("Parameters to use: " + function_arg)
+            # print("=============")
             output = ""
             # TO DO call the API matching the functionname and return the output
             if function_name == "create_lark_doc":
@@ -109,10 +106,10 @@ class Assistant:
                 # Use get method to avoid KeyError
                 document_id = data.get('document_id', 'Default Value')  # You can set a default value
                 content = data.get('content', 'Default')
-                print(document_id)
-                print(content)
+                # print(document_id)
+                # print(content)
                 output = insertContentIntoDoc(document_id, content)
-                print(output)
+                # print(output)
 
             tool_output_array.append({"tool_call_id": tool_call_id, "output": output})
 
@@ -121,6 +118,7 @@ class Assistant:
                 run_id=run.id,
                 tool_outputs=tool_output_array
             )
+            time.sleep(3)
 
         return run
 
