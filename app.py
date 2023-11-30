@@ -44,7 +44,7 @@ def bot_callback():
 
     run = assistant.get_run()
     if run is None:
-        print("run is None")
+        print("run is None. ")
         return default_respond
 
     assistant.execute_run(run)
