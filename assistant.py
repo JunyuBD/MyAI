@@ -4,7 +4,9 @@ import time
 import requests
 from openai import OpenAI
 from open_api import *
-open_api_key =  "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"
+
+
+open_api_key =  "VQQrT3BlbkFJ1LnHo2salfTFY0q111CO"
 class Assistant:
     def __init__(self):
         self.client = self.get_client()
@@ -12,7 +14,7 @@ class Assistant:
         self.thread = self.get_thread()
 
     def get_client(self):
-        openai_key = open_api_key # <--- Your API KEY
+        openai_key = "sk-F0AWaIVJAxhj7UV6"+open_api_key # <--- Your API KEY
         org_ID = "org-optNPL0mDpKx1zJB0tETlz2t"  # <--- Your Organization ID
 
         client = OpenAI(
