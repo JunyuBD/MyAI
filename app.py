@@ -1,6 +1,6 @@
 from urllib import request
 from flask import Flask, request, json
-
+import threading
 from assistant import *
 from utils import *
 
@@ -10,6 +10,35 @@ ASSISTANT_BOT_OPEN_ID = "ou_376caaa69595a9fa72425363c34dfc91"
 
 assistant_poll = {}
 message_map = {}
+
+
+# Function to handle time-consuming task
+def handle_time_consuming_task(user_open_id, user_message, message_id):
+    print("====== starting thread ====== for user {}, message {}, message id {}".format(user_open_id, user_message, message_id))
+    if user_open_id not in assistant_poll:
+        assistant = Assistant()
+        assistant_poll[user_open_id] = assistant
+    else:
+        assistant = assistant_poll[user_open_id]
+
+    assistant.add_user_message_to_thread(user_message)
+
+    run = assistant.get_run()
+    if run is None:
+        print("run is None. ")
+        return
+
+    assistant.execute_run(run)
+
+    response = assistant.get_latest_assistant_message()
+
+    print(response)
+
+    reply_to_user(message_id, response)
+
+    print("reply to user success")
+
+
 @app.route("/bot/callback", methods=["POST", "GET" ])
 def bot_callback():
     data = request.json
@@ -37,34 +66,15 @@ def bot_callback():
     if message_id in message_map:
         print("message already handled")
         return default_respond
-    print(f"deal with message id {message_id}")
+
     message_map[message_id] = True
     user_msg = get_msg(request.json['event'])
     user_msg_with_open_id = replace_user_with_id(request.json['event'], user_msg)
     assistant = None
-    print(f"user_msg_with_open_id {user_msg_with_open_id}")
-    if user_open_id not in assistant_poll:
-        assistant = Assistant()
-        assistant_poll[user_open_id] = assistant
-    else:
-        assistant = assistant_poll[user_open_id]
 
-    assistant.add_user_message_to_thread(user_msg_with_open_id)
-
-    run = assistant.get_run()
-    if run is None:
-        print("run is None. ")
-        return default_respond
-
-    assistant.execute_run(run)
-
-    response = assistant.get_latest_assistant_message()
-
-    print(response)
-
-    reply_to_user(message_id, response)
-
-    print("reply to user success")
+    print("====== starting thread ====== for {}".format(user_open_id))
+    thread = threading.Thread(target=handle_time_consuming_task, args=(user_open_id, user_msg_with_open_id, message_id,))
+    thread.start()
     return default_respond
 
 
