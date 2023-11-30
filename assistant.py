@@ -51,7 +51,7 @@ class Assistant:
         return message
 
     def execute_run(self, run):
-        tool_output_array = []
+
         i = 0
         print("execute run id is ======== : " + run.id)
 
@@ -71,8 +71,7 @@ class Assistant:
                 tools_to_call = run.required_action.submit_tool_outputs.tool_calls
                 print(tools_to_call)
 
-
-
+                tool_output_array = []
                 for each_tool in tools_to_call:
                     tool_call_id = each_tool.id
                     function_name = each_tool.function.name
