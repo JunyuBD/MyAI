@@ -12,7 +12,6 @@ assistant_poll = {}
 message_map = {}
 @app.route("/bot/callback", methods=["POST", "GET" ])
 def bot_callback():
-    print("request is {}".format(request))
     data = request.json
     print("data is {}".format(data))
     if 'challenge' in data:

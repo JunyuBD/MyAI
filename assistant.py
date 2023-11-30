@@ -26,7 +26,6 @@ class Assistant:
 
     def get_assistant(self):
         assistant = self.client.beta.assistants.retrieve("asst_OoOI3k7xyrBXkj92E3B1dowx")
-        print(assistant)
 
         return assistant
 
@@ -53,9 +52,9 @@ class Assistant:
 
     def execute_run(self, run):
         i = 0
-        print(run.id)
+        print("execute run id is ======== : " + run.id)
 
-        while run.status not in ["completed", "failed", "requires_action"]:
+        while run.status not in ["completed", "failed"]:
             if i > 0:
                 time.sleep(10)
             run = self.client.beta.threads.runs.retrieve(
@@ -64,13 +63,11 @@ class Assistant:
             )
 
             i += 1
-            print(run)
             print("***************            "+run.status)
 
             if run.status == "requires_action":
                 print("Action required")
                 tools_to_call = run.required_action.submit_tool_outputs.tool_calls
-                print(len(tools_to_call))
                 print(tools_to_call)
 
                 tool_output_array = []
@@ -86,17 +83,19 @@ class Assistant:
                     output = ""
                     # TO DO call the API matching the functionname and return the output
                     if function_name == "create_lark_doc":
+                        print("calling create_lark_doc +++++++++++++++")
                         # To Do:  call fetch_userid API and return the userid as output
                         data = json.loads(function_arg)
                         # Use get method to avoid KeyError
                         title_value = data.get('title', 'Default Value')  # You can set a default value
 
-                        print(title_value)
+                        # print(title_value)
                         doc_result, doc_link = createLarkDoc(title_value)
-                        print("doc result is " + doc_result)
+                        # print("doc result is " + doc_result)
                         print("doc link:   " + doc_link)
                         output = doc_result + " The sharable doc link is: " + doc_link
                     if function_name == "add_content_to_doc":
+                        print("calling add_content_to_doc +++++++++++++++")
                         # To Do:  call fetch_userid API and return the userid as output
                         data = json.loads(function_arg)
                         # Use get method to avoid KeyError
@@ -114,13 +113,9 @@ class Assistant:
                         run_id=run.id,
                         tool_outputs=tool_output_array
                     )
-                    time.sleep(5)
+                    time.sleep(1)
         return
 
-    def execute_actions(self, run):
-
-
-        return run
 
     def get_latest_assistant_message(self):
         messages = self.client.beta.threads.messages.list(
