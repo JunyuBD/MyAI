@@ -33,7 +33,7 @@ def bot_callback():
     if message_id in message_map:
         print("message already handled")
         return default_respond
-
+    print(f"deal with message id {message_id}")
     message_map[message_id] = True
     user_msg = get_msg(request.json['event'])
     user_msg_with_open_id = replace_user_with_id(request.json['event'], user_msg)
