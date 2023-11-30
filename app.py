@@ -1,22 +1,21 @@
-import json
 from urllib import request
-
-from flask import Flask
-from flask import render_template
+from flask import Flask, request, json
 
 app = Flask(__name__)
 
-@app.route("/bot/callback", methods=["POST"])
+@app.route("/bot/callback", methods=["POST", "GET" ])
 def bot_callback():
-    print(request)
-    if 'challenge' in request.json:
+    print("request is {}".format(request))
+    data = request.json
+    print("data is {}".format(data))
+    if 'challenge' in data:
         return json.dumps({
             "challenge": request.json['challenge']
     })
 
-    print(request.json)
-    print(request.json['event']['sender']['sender_id']['open_id'])
-    user_open_id = request.json['event']['sender']['sender_id']['open_id']
+    print(data['event']['sender']['sender_id']['open_id'])
+    user_open_id = data['event']['sender']['sender_id']['open_id']
     default_respond = json.dumps({
         "success": "cool"
     })
+    return default_respond
