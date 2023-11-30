@@ -50,7 +50,9 @@ def bot_callback():
     })
 
     sleep_time = random.uniform(0, 3)
-
+    default_respond = json.dumps({
+        "success": "cool"
+    })
     # Pause the program for the generated duration
     time.sleep(sleep_time)
 
@@ -58,7 +60,7 @@ def bot_callback():
     print(f"Slept for {sleep_time} seconds, for message id {message_id}")
     if message_id in message_map:
         print("message already handled")
-        return
+        return default_respond
 
     message_map[message_id] = True
 
@@ -67,9 +69,7 @@ def bot_callback():
         reply_to_user(message_id, "Sorry, the beta is unstable so it only allow certain users to test.")
 
     user_open_id = data['event']['sender']['sender_id']['open_id']
-    default_respond = json.dumps({
-        "success": "cool"
-    })
+
     has_mention = bot_mentioned_in_group(request.json['event'], ASSISTANT_BOT_OPEN_ID)
     print(f"has mention {has_mention}")
 
