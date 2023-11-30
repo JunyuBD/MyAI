@@ -1,3 +1,4 @@
+import random
 from urllib import request
 from flask import Flask, request, json
 import threading
@@ -48,7 +49,18 @@ def bot_callback():
             "challenge": request.json['challenge']
     })
 
+    sleep_time = random.uniform(0, 3)
+
+    # Pause the program for the generated duration
+    time.sleep(sleep_time)
+
     message_id = request.json['event']['message']['message_id']
+    print(f"Slept for {sleep_time} seconds, for message id {message_id}")
+    if message_id in message_map:
+        print("message already handled")
+        return
+
+    message_map[message_id] = True
 
     print(data['event']['sender']['sender_id']['open_id'])
     if data['event']['sender']['sender_id']['open_id'] != "ou_aaa0199b52b1044cd44c043245927932":
@@ -63,11 +75,7 @@ def bot_callback():
         print('bot not mentioned in the group')
         return default_respond
 
-    if message_id in message_map:
-        print("message already handled")
-        return default_respond
 
-    message_map[message_id] = True
     user_msg = get_msg(request.json['event'])
     user_msg_with_open_id = replace_user_with_id(request.json['event'], user_msg)
     assistant = None
