@@ -66,10 +66,10 @@ class Assistant:
             print(run)
             print(run.status)
 
-        if run.status == "requires_action":
-            print("Action required")
-            run = self.execute_actions(run)
-            self.execute_run(run)
+            if run.status == "requires_action":
+                print("Action required")
+                run = self.execute_actions(run)
+
 
 
 
