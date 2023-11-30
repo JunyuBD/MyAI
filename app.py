@@ -3,6 +3,7 @@ from urllib import request
 from flask import Flask, request, json
 import threading
 from assistant import *
+from redis_op import RedisClientManager
 from utils import *
 
 app = Flask(__name__)
@@ -12,6 +13,13 @@ ASSISTANT_BOT_OPEN_ID = "ou_376caaa69595a9fa72425363c34dfc91"
 assistant_poll = {}
 message_map = {}
 
+# Initialize the Redis client
+client_manager = RedisClientManager(
+    host='db-redis-sfo2-83938-do-user-15061200-0.c.db.ondigitalocean.com',
+    port=25061,
+    username='default',
+    password='AVNS_xXaKnyB4wWY1FrdO8Rx',
+)
 
 # Function to handle time-consuming task
 def handle_time_consuming_task(user_open_id, user_message, message_id):
@@ -58,11 +66,12 @@ def bot_callback():
 
     message_id = request.json['event']['message']['message_id']
     print(f"Slept for {sleep_time} seconds, for message id {message_id}")
-    if message_id in message_map:
-        print("message already handled")
+
+    if not client_manager.add_request(message_id, "1"):
+        print("message id already exists")
         return default_respond
 
-    message_map[message_id] = True
+    print("message id not exists, process for firtst time")
 
     print(data['event']['sender']['sender_id']['open_id'])
     if data['event']['sender']['sender_id']['open_id'] != "ou_aaa0199b52b1044cd44c043245927932":
