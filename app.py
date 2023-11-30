@@ -65,6 +65,7 @@ def bot_callback():
     thread = threading.Thread(target=handle_time_consuming_task, args=(user_msg_with_open_id, user_open_id, message_id,))
     thread.start()
 
+
     return default_respond
 
 
