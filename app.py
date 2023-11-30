@@ -1,10 +1,14 @@
 from urllib import request
 from flask import Flask, request, json
+
+from assistant import *
 from utils import *
 
 app = Flask(__name__)
 
 ASSISTANT_BOT_OPEN_ID = "ou_376caaa69595a9fa72425363c34dfc91"
+
+assistant_poll = {}
 
 @app.route("/bot/callback", methods=["POST", "GET" ])
 def bot_callback():
@@ -28,7 +32,28 @@ def bot_callback():
 
     user_msg = get_msg(request.json['event'])
     user_msg_with_open_id = replace_user_with_id(request.json['event'], user_msg)
-
+    assistant = None
     print(f"user_msg_with_open_id {user_msg_with_open_id}")
+    if user_open_id not in assistant_poll:
+        assistant = Assistant()
+        assistant_poll[user_open_id] = assistant
+    else:
+        assistant = assistant_poll[user_open_id]
+
+    assistant.add_user_message_to_thread(user_msg_with_open_id)
+
+    run = assistant.get_run()
+    if run is None:
+        print("run is None")
+        return default_respond
+
+    assistant.execute_run(run)
+
+    response = assistant.get_latest_assistant_message()
+
+    print(response)
+
 
     return default_respond
+
+
