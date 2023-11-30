@@ -74,10 +74,11 @@ def bot_callback():
     print(f"has mention {has_mention}")
 
     if not has_mention :
+        print('bot not mentioned in the group')
         return default_respond
 
-    if request.json['event']['message']['chat_type'] == 'group' :
-        print('bot not mentioned in the group')
+    if request.json['event']['message']['chat_type'] != 'group' :
+        print("not as group")
         return default_respond
 
 
@@ -90,7 +91,7 @@ def bot_callback():
     print("====== starting thread ====== for {}".format(user_open_id))
     # thread = threading.Thread(target=handle_time_consuming_task, args=(user_open_id, user_msg_with_open_id, message_id,))
     # thread.start()
-
+    time.sleep(10)
     reply_to_user(message_id, "I am processing your request, please wait a moment. ")
     return default_respond
 

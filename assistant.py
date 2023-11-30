@@ -108,12 +108,16 @@ class Assistant:
 
                     tool_output_array.append({"tool_call_id": tool_call_id, "output": output})
 
-                    self.client.beta.threads.runs.submit_tool_outputs(
-                        thread_id=self.thread.id,
-                        run_id=run.id,
-                        tool_outputs=tool_output_array
-                    )
-                    time.sleep(1)
+                self.client.beta.threads.runs.submit_tool_outputs(
+                    thread_id=self.thread.id,
+                    run_id=run.id,
+                    tool_outputs=tool_output_array
+                )
+                time.sleep(1)
+                run = self.client.beta.threads.runs.retrieve(
+                    thread_id=self.thread.id,
+                    run_id=run.id
+                )
         return
 
 
