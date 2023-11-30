@@ -4,7 +4,7 @@ import time
 import requests
 from openai import OpenAI
 from open_api import *
-open_api_key =  "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"
+open_api_key =  "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"
 class Assistant:
     def __init__(self):
         self.client = self.get_client()
@@ -29,11 +29,11 @@ class Assistant:
         return assistant
 
     def get_thread(self):
-        thread = self.assistant.beta.threads.create()
+        thread = self.client.beta.threads.create()
         return thread
 
     def get_run(self):
-        run = self.assistant.beta.threads.runs.create(
+        run = self.client.beta.threads.runs.create(
             thread_id=self.thread.id,
             assistant_id=self.assistant.id
             # instructions=""
@@ -66,7 +66,7 @@ class Assistant:
 
         if run.status == "requires_action":
             print("Action required")
-            self.execute_actions(run)
+            run = self.execute_actions(run)
             self.execute_run(run)
 
         return
@@ -118,13 +118,15 @@ class Assistant:
                 tool_outputs=tool_output_array
             )
 
+        return run
+
     def get_latest_assistant_message(self):
         messages = self.client.beta.threads.messages.list(
             thread_id=self.thread.id
         )
+
         for each in messages:
             # print(each)
             print(each.role + ": " + each.content[0].text.value)
             print("=========")
-
-        return messages[0].content[0].text.value
+            return each.content[0].text.value
