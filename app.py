@@ -72,7 +72,11 @@ def bot_callback():
     })
     has_mention = bot_mentioned_in_group(request.json['event'], ASSISTANT_BOT_OPEN_ID)
     print(f"has mention {has_mention}")
-    if request.json['event']['message']['chat_type'] == 'group' and not has_mention:
+
+    if not has_mention :
+        return default_respond
+
+    if request.json['event']['message']['chat_type'] == 'group' :
         print('bot not mentioned in the group')
         return default_respond
 
