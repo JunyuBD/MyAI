@@ -52,8 +52,10 @@ def bot_callback():
     response = assistant.get_latest_assistant_message()
 
     print(response)
+    message_id = request.json['event']['message']['message_id']
+    reply_to_user(message_id, response)
 
-
+    print("reply to user success")
     return default_respond
 
 
