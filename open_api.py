@@ -76,7 +76,7 @@ def updateViewPermission(token):
 
 def insertContentIntoDoc(doc_id, c):
     # 创建client
-    url = f"https://fsopen.bytedance.net/open-apis/docx/v1/documents/{doc_id}/blocks/{doc_id}/children?document_revision_id=-1"
+    url = f"https://open.larksuite.com/open-apis/docx/v1/documents/{doc_id}/blocks/{doc_id}/children?document_revision_id=-1"
     payload = json.dumps({
         "children": [
             {
@@ -102,6 +102,7 @@ def insertContentIntoDoc(doc_id, c):
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {tenant_access_token}'
     }
+    print("payload is " + payload)
 
     response = requests.request("POST", url, headers=headers, data=payload)
     print("response is " + response.text)
