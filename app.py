@@ -70,19 +70,22 @@ def bot_callback():
     default_respond = json.dumps({
         "success": "cool"
     })
-
-    if request.json['event']['message']['chat_type'] == 'group' and not bot_mentioned_in_group(request.json['event'], ASSISTANT_BOT_OPEN_ID):
+    has_mention = bot_mentioned_in_group(request.json['event'], ASSISTANT_BOT_OPEN_ID)
+    print(f"has mention {has_mention}")
+    if request.json['event']['message']['chat_type'] == 'group' and not has_mention:
         print('bot not mentioned in the group')
         return default_respond
 
 
     user_msg = get_msg(request.json['event'])
     user_msg_with_open_id = replace_user_with_id(request.json['event'], user_msg)
+
+    print("user msg is {}".format(user_msg_with_open_id))
     assistant = None
 
     print("====== starting thread ====== for {}".format(user_open_id))
-    thread = threading.Thread(target=handle_time_consuming_task, args=(user_open_id, user_msg_with_open_id, message_id,))
-    thread.start()
+    # thread = threading.Thread(target=handle_time_consuming_task, args=(user_open_id, user_msg_with_open_id, message_id,))
+    # thread.start()
 
     reply_to_user(message_id, "I am processing your request, please wait a moment. ")
     return default_respond
