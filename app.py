@@ -98,9 +98,9 @@ def bot_callback():
     assistant = None
 
     print("====== starting thread ====== for {}".format(user_open_id))
-    # thread = threading.Thread(target=handle_time_consuming_task, args=(user_open_id, user_msg_with_open_id, message_id,))
-    # thread.start()
-    time.sleep(10)
+    thread = threading.Thread(target=handle_time_consuming_task, args=(user_open_id, user_msg_with_open_id, message_id,))
+    thread.start()
+    # time.sleep(10)
     reply_to_user(message_id, "I am processing your request, please wait a moment. ")
     return default_respond
 
